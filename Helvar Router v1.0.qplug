@@ -8,7 +8,7 @@ PluginInfo = {
 	-- The square brackets allow for a multi-line string
     Description = [[Controls the Helvar Dali Router]],
     Author = "Jens Claerebout",
-    ShowDebug = true
+    ShowDebug = true,
 }
 
 ------------------------------- Global Variables ------------------------------
@@ -363,6 +363,14 @@ function funcConnectSocket()
   Controls.Status.Value = 5
 end 
 
+function SendData(toSend)
+  if socket.IsConnected then 
+    socket:Write(toSend)
+  else 
+    print("Unable to send data, socket disconnected")
+  end 
+end 
+
 ------------------------------- Runtime Logic ---------------------------------
 
 if Controls then
@@ -412,7 +420,8 @@ function Initialize()
             local group = Controls.GroupNumber[btn].String
             local cmd = ">V:1,C:13,G:" .. group .. ",B:1,L:" .. level .. "#"
             print(cmd)
-            socket:Write(cmd)
+            SendData(cmd)
+            --socket:Write(cmd)
         end
 
         ctrl.EventHandler = function(ctrl)
@@ -423,7 +432,8 @@ function Initialize()
                 local group = Controls.GroupNumber[btn].String
                 local cmd = ">V:1,C:13,G:" .. group .. ",B:1,L:" .. level .. "#"
                 print(cmd)
-                socket:Write(cmd)
+                SendData(cmd)
+                --socket:Write(cmd)
                 incrementTimers[btn]:Start(0.2)
             else
                 incrementTimers[btn]:Stop()
@@ -441,7 +451,8 @@ function Initialize()
             local group = Controls.GroupNumber[btn].String
             local cmd = ">V:1,C:13,G:" .. group .. ",B:1,L:" .. level .. "#"
             print(cmd)
-            socket:Write(cmd)
+            SendData(cmd)
+            --socket:Write(cmd)
         end
 
         ctrl.EventHandler = function(ctrl)
@@ -451,7 +462,8 @@ function Initialize()
                 local group = Controls.GroupNumber[btn].String
                 local cmd = ">V:1,C:13,G:" .. group .. ",B:1,L:" .. level .. "#"
                 print(cmd)
-                socket:Write(cmd)
+                SendData(cmd)
+                --socket:Write(cmd)
                 decrementTimers[btn]:Start(0.2)
             else
                 decrementTimers[btn]:Stop()
@@ -466,7 +478,8 @@ function Initialize()
             print("Group "..Controls.Level[key].Value)
             cmd = ">V:1,C:13,G:"..Controls.GroupNumber[key].String..",B:1,L:"..Controls.Level[key].Value.."#"
             print(cmd)
-            socket:Write(cmd)
+            SendData(cmd)
+            --socket:Write(cmd)
         end 
     end
 end
