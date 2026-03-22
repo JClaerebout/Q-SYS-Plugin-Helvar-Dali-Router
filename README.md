@@ -87,3 +87,85 @@ This plugin is designed for scalable installations, supporting multiple DALI gro
 The plugin communicates with the Helvar router using TCP commands.
 
 ### Command Format
+V:1,C:13,G:<group>,B:1,L:<level>#
+
+### Example
+V:1,C:13,G:5,B:1,L:75#
+
+This sets:
+
+- Group: `5`
+- Level: `75%`
+
+---
+
+## Behavior
+
+### Increment / Decrement
+
+- Step size: **5%**
+- Hold button → repeats every **0.2 seconds**
+
+### Level Control
+
+- Direct changes send immediate commands
+
+### Connection Handling
+
+- Automatically connects on:
+  - Plugin initialization
+  - IP change
+- Handles:
+  - Reconnects
+  - Timeouts
+  - Errors
+
+---
+
+## Installation
+
+1. Place the plugin in your Q-SYS plugin directory or deploy via Designer
+2. Add the plugin to your design
+3. Configure:
+   - IP address of Helvar router
+   - Number of groups
+   - Group numbers
+4. Deploy to Core
+
+---
+
+## Notes
+
+- Ensure the Helvar router is reachable on port `50000`
+- Group numbers must match your Helvar configuration
+- No authentication is currently implemented
+
+---
+
+## Known Limitations
+
+- No feedback parsing from Helvar (currently logs raw TCP data only)
+- No automatic group discovery
+- No scene control (yet)
+
+---
+
+## Future Improvements
+
+- Feedback parsing (status + levels)
+- Scene control support
+- Group naming
+- Authentication support (if required by Helvar)
+- UI enhancements
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author
+
+**Jens Claerebout**
