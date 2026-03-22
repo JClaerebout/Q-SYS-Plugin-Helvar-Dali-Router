@@ -1,13 +1,122 @@
 # Q-SYS-Plugin-Helvar-Dali-Router
-Q-sys plugin for controlling a Helvar Dali Router
+Helvar DALI Router – Q-SYS Plugin
+Overview
 
- In the Properties you can set #Groups you want to control.
+    The Helvar DALI Router Q-SYS Plugin enables control of Helvar DALI lighting systems directly from a Q-SYS environment.
+    It provides group-based lighting control, including level adjustment and incremental changes, via a TCP connection to the Helvar router.
 
- Per group, enter the group number set in Helvar router.
-    - You can set desired level 0-100% for the group
-    - Increment the level
-    - Decrement the level
-  
-Increment and decrement are set to +/- 5% per press and have a 0.2s rate for press and hold.
+    This plugin is designed for scalable installations, supporting multiple DALI groups with an intuitive multi-page interface.
 
-This Plugin does not yet get level feedback from the Router, this will be implemented in a later version. 
+Features
+    Control Helvar DALI groups over TCP (port 50000)
+    Adjustable number of groups (2–50)
+    Direct level control (0–100%)
+    Increment / Decrement buttons with press-and-hold support
+    Real-time status feedback
+    Multi-page UI for large group counts
+    Automatic reconnection handling
+
+Plugin Information
+    Property	    Value   
+    Name	        Helvar DALI Router
+    Version	        1.0.0.0
+    Author	        Jens Claerebout
+    Protocol	    TCP
+    Default Port	50000
+
+Configuration
+    Properties
+        Property	    Description
+        #Groups	        Number of DALI groups (2–50). Determines UI size and control count
+
+    Control Pins
+        Inputs
+            Control	        Type	                Description
+            IP	            Text	                IP address of the Helvar DALI Router
+            GroupNumber	    Integer (per group)	    DALI group address
+            Level	        Percent (per group)	    Light level (0–100%)
+            Increment	    Button	                Increase level (step +5, hold to repeat)
+            Decrement	    Button	                Decrease level (step -5, hold to repeat)
+        
+        Outputs
+            Control	        Type	                Description
+            Status	        Indicator	            Connection/system status
+            Level	        Percent (per group)	    Light level (0–100%)
+
+    UI Layout
+        Page 1 – Configuration
+            Displays:
+                Connection status
+                IP address input
+
+        Pages 2+ – Group Control
+            Groups are displayed in blocks of 10 per page
+            Each group includes:
+                Group number input
+                Level control
+                Increment / Decrement buttons
+
+Communication
+
+    The plugin communicates with the Helvar router using TCP commands.
+
+    Command Format
+        >V:1,C:13,G:<group>,B:1,L:<level>#
+    Example
+        >V:1,C:13,G:5,B:1,L:75#
+
+    This sets:
+
+    Group: 5
+    Level: 75%
+
+Behavior
+    Increment / Decrement
+        Step size: 5%
+        Hold button → repeats every 0.2 seconds
+
+Level Control
+    Direct changes send immediate commands
+
+Connection Handling
+    Automatically connects on:
+        Plugin initialization
+        IP change
+    Handles:
+        Reconnects
+        Timeouts
+        Errors
+
+Installation
+    Place the plugin in your Q-SYS plugin directory or deploy via Designer
+    Add the plugin to your design
+    Configure:
+        IP address of Helvar router
+        Number of groups
+        Group numbers
+    Deploy to Core
+    
+Notes
+    Ensure the Helvar router is reachable on port 50000
+    Group numbers must match your Helvar configuration
+    No authentication is currently implemented
+
+Known Limitations
+    No feedback parsing from Helvar (currently logs raw TCP data only)
+    No automatic group discovery
+    No scene control (yet)
+
+Future Improvements
+    Feedback parsing (status + levels)
+    Scene control support
+    Group naming
+    Authentication support (if required by Helvar)
+    UI enhancements
+
+License
+
+    MIT License (or update as desired)
+
+Author
+
+    Jens Claerebout
