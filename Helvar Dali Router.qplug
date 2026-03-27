@@ -54,6 +54,12 @@ function GetProperties()
         Min = 2,
         Max = 50,
     })
+    table.insert(props, {
+        Name = "HelvarNet Version",
+        Type = "enum",
+        Choices = {"V1", "V2"},
+        Value = "V1"
+    })
 
     return props
 end
@@ -128,6 +134,7 @@ function GetControls(props)
         Name = "Increment",
         ControlType = "Button",
         ButtonType = "Momentary",
+        Icon = "Plus",
         Count = props["#Groups"].Value,
         PinStyle = "Input",
         UserPin = true
@@ -137,11 +144,24 @@ function GetControls(props)
         Name = "Decrement",
         ControlType = "Button",
         ButtonType = "Momentary",
+        Icon = "Minus",
         Count = props["#Groups"].Value,
         PinStyle = "Input",
         UserPin = true
     })
 
+    table.insert(ctls, {
+        Name = "Fade",
+        ControlType = "Knob",
+        ControlUnit = "Integer",
+        Min = 1,
+        Max = 100,
+        DefaultValue = 3,
+        Count = props["#Groups"].Value,
+        PinStyle = "Input",
+        UserPin = true
+    })
+    
     return ctls
 end
 
@@ -221,7 +241,7 @@ function GetControlLayout(props)
         table.insert(graphics, {
             Type = "GroupBox",
             Position = { 14,14 },
-            Size = {440,45 + math.min(10, props["#Groups"].Value - groupIndex) * 35},
+            Size = {539,45 + math.min(10, props["#Groups"].Value - groupIndex) * 35},
             StrokeColor = "black",
             StrokeWidth = 2,
             CornerRadius = 10,
@@ -236,21 +256,28 @@ function GetControlLayout(props)
         })
         table.insert(graphics, {
             Type = "Label",
-			Position = { 174,28 },
+			Position = { 182,28 },
 			Size = {76,16},
-            Text = "Level",
+            Text = "Direct Level",
             TextSize = 14,
         })
         table.insert(graphics, {
             Type = "Label",
-			Position = { 232,28 },
+			Position = { 271,28 },
+			Size = {76,16},
+            Text = "Fade Time",
+            TextSize = 14,
+        })
+        table.insert(graphics, {
+            Type = "Label",
+			Position = { 344,28 },
 			Size = {104,16},
             Text = "Increment",
             TextSize = 14,
         })
         table.insert(graphics, {
             Type = "Label",
-			Position = { 312,28 },
+			Position = { 429,28 },
 			Size = {104,16},
             Text = "Decrement",
             TextSize = 14,
@@ -279,7 +306,17 @@ function GetControlLayout(props)
             layout["Level " .. (groupIndex + i)] = 
             {
                 PrettyName = "Level " .. (groupIndex + i),
-                Position = { 191, 50 + (i-1)*35 },
+                Position = { 190, 50 + (i-1)*35 },
+                Size = { 60, 27 },
+                Style = "Text",
+                TextFontSize = 10,
+                CornerRadius = 10,
+            }
+
+            layout["Fade " .. (groupIndex + i)] = 
+            {
+                PrettyName = "Fade " .. (groupIndex + i),
+                Position = { 284,50 + (i-1)*35 },
                 Size = { 43, 27 },
                 Style = "Text",
                 TextFontSize = 10,
@@ -289,7 +326,7 @@ function GetControlLayout(props)
             layout["Increment " .. (groupIndex + i)] = 
             {
                 PrettyName = "Increment " .. (groupIndex + i),
-                Position = { 263, 50 + (i-1)*35 },
+                Position = { 375,50 + (i-1)*35 },
                 Size = { 43, 27 },
                 Style = "Button",
                 CornerRadius = 10,
@@ -298,7 +335,7 @@ function GetControlLayout(props)
             layout["Decrement " .. (groupIndex + i)] = 
             {
                 PrettyName = "Decrement " .. (groupIndex + i),
-                Position = { 343, 50 + (i-1)*35 },
+                Position = { 460,50 + (i-1)*35 },
                 Size = { 43, 27 },
                 Style = "Button",
                 CornerRadius = 10,
@@ -387,6 +424,12 @@ function Initialize()
     ip = Controls.IP
     port = 50000
 
+    if Properties["HelvarNet Version"].Value == "V1" then
+        version = 1
+    else
+        version = 2
+    end
+
     socket = TcpSocket.New()
 
     socket.EventHandler = function( sock, evt, err )
@@ -395,19 +438,20 @@ function Initialize()
             Controls.Status.Value = 0
         elseif evt == TcpSocket.Events.Reconnect then
             print("Reconnecting...")
-            Controls.Status.Value = 4
+            Controls.Status.Value = 2
         elseif evt == TcpSocket.Events.Data then
             message = socket:Read(socket.BufferLength)
             print("TCP socket has data:",message )
         elseif evt == TcpSocket.Events.Closed then
             print("Connection Closed.")
-            Controls.Status.Value = 4
+            Controls.Status.Value = 2
         elseif evt == TcpSocket.Events.Error then
             print("Connection error.")
-            Controls.Status.Value = 2
+            Controls.Status.Value = 4
+            Controls.Status.String = err
         elseif evt == TcpSocket.Events.Timeout then
             print("Connection Timeout.")
-            Controls.Status.Value = 4
+            Controls.Status.Value = 2
         end
     end
 
@@ -421,7 +465,7 @@ function Initialize()
             Controls.Level[btn].Value = Controls.Level[btn].Value + 5
             local level = math.floor(Controls.Level[btn].Value)
             local group = Controls.GroupNumber[btn].String
-            local cmd = ">V:1,C:13,G:" .. group .. ",B:1,L:" .. level .. "#"
+            local cmd = ">V:"..version..",C:13,G:" .. group .. ",L:" .. level .. "#"
             print(cmd)
             SendData(cmd)
         end
@@ -432,7 +476,7 @@ function Initialize()
                 Controls.Level[btn].Value = Controls.Level[btn].Value + 5
                 local level = math.floor(Controls.Level[btn].Value)
                 local group = Controls.GroupNumber[btn].String
-                local cmd = ">V:1,C:13,G:" .. group .. ",B:1,L:" .. level .. "#"
+                local cmd = ">V:"..version..",C:13,G:" .. group .. ",L:" .. level .. "#"
                 print(cmd)
                 SendData(cmd)
                 incrementTimers[btn]:Start(0.2)
@@ -450,7 +494,7 @@ function Initialize()
             Controls.Level[btn].Value = Controls.Level[btn].Value - 5
             local level = math.floor(Controls.Level[btn].Value)
             local group = Controls.GroupNumber[btn].String
-            local cmd = ">V:1,C:13,G:" .. group .. ",B:1,L:" .. level .. "#"
+            local cmd = ">V:"..version..",C:13,G:" .. group .. ",L:" .. level .. "#"
             print(cmd)
             SendData(cmd)
 
@@ -461,7 +505,7 @@ function Initialize()
                 Controls.Level[btn].Value = Controls.Level[btn].Value - 5
                 local level = math.floor(Controls.Level[btn].Value)
                 local group = Controls.GroupNumber[btn].String
-                local cmd = ">V:1,C:13,G:" .. group .. ",B:1,L:" .. level .. "#"
+                local cmd = ">V:"..version..",C:13,G:" .. group .. ",L:" .. level .. "#"
                 print(cmd)
                 SendData(cmd)
 
@@ -477,10 +521,9 @@ function Initialize()
     for key,value in pairs(Controls.Level) do
         Controls.Level[key].EventHandler = function(ctrl)
             print("Group "..Controls.Level[key].Value)
-            cmd = ">V:1,C:13,G:"..Controls.GroupNumber[key].String..",B:1,L:"..Controls.Level[key].Value.."#"
+            cmd = ">V:"..version..",C:13,G:"..Controls.GroupNumber[key].String..",L:"..math.floor(Controls.Level[key].Value)..",F:"..math.floor(Controls.Fade[key].Value).."00#"
             print(cmd)
             SendData(cmd)
-
         end 
     end
 end

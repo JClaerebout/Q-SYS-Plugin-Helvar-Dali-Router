@@ -52,7 +52,8 @@ This plugin is designed for scalable installations, supporting multiple DALI gro
 |--------|------|------------|
 | `IP` | Text | IP address of the Helvar DALI Router |
 | `GroupNumber` | Integer (per group) | DALI group address |
-| `Level` | Percent (per group) | Light level (0–100%) |
+| `Direct Level` | Percent (per group) | Light level (0–100%) |
+| `Fade Time` | Integer (per group) | Fade Time (1-100 sec) |
 | `Increment` | Button | Increase level (step +5, hold to repeat) |
 | `Decrement` | Button | Decrease level (step -5, hold to repeat) |
 
@@ -77,7 +78,8 @@ This plugin is designed for scalable installations, supporting multiple DALI gro
 - Groups are displayed in blocks of 10 per page
 - Each group includes:
   - Group number input
-  - Level control
+  - Direct Level control
+  - Fade Time
   - Increment / Decrement buttons
 
 ---
@@ -87,15 +89,16 @@ This plugin is designed for scalable installations, supporting multiple DALI gro
 The plugin communicates with the Helvar router using TCP commands.
 
 ### Command Format
-V:1,C:13,G:<group>,B:1,L:<level>#
+V:1,C:13,G:<group>,L:<level>,F:<fade>#
 
 ### Example
-V:1,C:13,G:5,B:1,L:75#
+V:1,C:13,G:5,L:75,F:300#
 
 This sets:
 
 - Group: `5`
 - Level: `75%`
+- Fade: `3s`
 
 ---
 
@@ -108,7 +111,7 @@ This sets:
 
 ### Level Control
 
-- Direct changes send immediate commands
+- Direct changes send immediate commands with set fade time to all devices in group.
 
 ### Connection Handling
 
@@ -127,9 +130,10 @@ This sets:
 1. Place the plugin in your Q-SYS plugin directory or deploy via Designer
 2. Add the plugin to your design
 3. Configure:
-   - IP address of Helvar router
-   - Number of groups
-   - Group numbers
+   - Set IP address of Helvar router
+   - Set Number of groups in properties
+   - Set HelvarNet Version (default: V1)
+   - Enter Group numbers as configured in Helvar Designer
 4. Deploy to Core
 
 ---
@@ -144,7 +148,7 @@ This sets:
 
 ## Known Limitations
 
-- No feedback parsing from Helvar (currently logs raw TCP data only)
+- No feedback parsing from Helvar, HelvarNet does not support group level feedback
 - No automatic group discovery
 - No scene control (yet)
 
@@ -152,7 +156,7 @@ This sets:
 
 ## Future Improvements
 
-- Feedback parsing (status + levels)
+- Level feedback parsing
 - Scene control support
 - Group naming
 - Authentication support (if required by Helvar)
