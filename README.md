@@ -12,6 +12,15 @@ This plugin is designed for scalable installations, supporting multiple DALI gro
 
 ## Features
 
+ | version | notes |
+ |---------|-------|
+ | V1.0.0.0 | Initial release |
+ | V1.0.0.1 | Added foldable control pins | 
+
+---
+
+## Features
+
 - Control Helvar DALI groups over TCP (port `50000`)
 - Adjustable number of groups (2–50)
 - Direct level control (0–100%)
@@ -27,7 +36,7 @@ This plugin is designed for scalable installations, supporting multiple DALI gro
 | Property | Value |
 |----------|------|
 | Name | Helvar DALI Router |
-| Version | 1.0.0.0 |
+| Version | 1.0.0.1 |
 | Author | Jens Claerebout |
 | Protocol | TCP |
 | Default Port | 50000 |
