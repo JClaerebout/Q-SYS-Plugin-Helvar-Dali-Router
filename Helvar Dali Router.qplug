@@ -2,7 +2,7 @@ PluginInfo = {
 	-- Use a tilde (~) to seperate the name into a folder
     Name = "Helvar~Helvar Dali Router",
 	-- Use semantic versioning
-    Version = "1.0.0.0",
+    Version = "1.0.0.1",
 	-- Use a GUID for the Id (Note: Avoid changing the Id for a plugin once it is set)
     Id = "e5d65d7e-81cc-488a-85d3-8b654a62b432",
 	-- The square brackets allow for a multi-line string
@@ -295,7 +295,7 @@ function GetControlLayout(props)
 
             layout["GroupNumber " .. (groupIndex + i)] = 
             {
-                PrettyName = "GroupNumber " .. (groupIndex + i),
+                PrettyName = "GroupNumber~GroupNumber " .. (groupIndex + i),
                 Position = { 100, 50 + (i-1)*35 },
                 Size = { 60, 27 },
                 Style = "Text",
@@ -305,7 +305,7 @@ function GetControlLayout(props)
 
             layout["Level " .. (groupIndex + i)] = 
             {
-                PrettyName = "Level " .. (groupIndex + i),
+                PrettyName = "Level~Level " .. (groupIndex + i),
                 Position = { 190, 50 + (i-1)*35 },
                 Size = { 60, 27 },
                 Style = "Text",
@@ -315,7 +315,7 @@ function GetControlLayout(props)
 
             layout["Fade " .. (groupIndex + i)] = 
             {
-                PrettyName = "Fade " .. (groupIndex + i),
+                PrettyName = "Fade~Fade " .. (groupIndex + i),
                 Position = { 284,50 + (i-1)*35 },
                 Size = { 43, 27 },
                 Style = "Text",
@@ -325,7 +325,7 @@ function GetControlLayout(props)
 
             layout["Increment " .. (groupIndex + i)] = 
             {
-                PrettyName = "Increment " .. (groupIndex + i),
+                PrettyName = "Increment~Increment " .. (groupIndex + i),
                 Position = { 375,50 + (i-1)*35 },
                 Size = { 43, 27 },
                 Style = "Button",
@@ -334,7 +334,7 @@ function GetControlLayout(props)
 
             layout["Decrement " .. (groupIndex + i)] = 
             {
-                PrettyName = "Decrement " .. (groupIndex + i),
+                PrettyName = "Decrement~Decrement " .. (groupIndex + i),
                 Position = { 460,50 + (i-1)*35 },
                 Size = { 43, 27 },
                 Style = "Button",
