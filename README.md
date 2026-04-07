@@ -10,7 +10,7 @@ This plugin is designed for scalable installations, supporting multiple DALI gro
 
 ---
 
-## Features
+## Versions
 
  | version | notes |
  |---------|-------|
